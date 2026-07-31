@@ -267,12 +267,14 @@ a{color:inherit}
 .blk__grid{display:grid;gap:clamp(36px,5vw,68px);align-items:center}
 .blk__kick{font-family:var(--ff-d);font-weight:700;font-size:1rem;margin-top:34px;
   letter-spacing:-.02em}
+.blk__kick--eyebrow{margin-top:0;margin-bottom:12px;color:var(--acc)}
 .ticks{margin-top:14px;display:grid;gap:11px;max-width:44ch}
 .ticks li{position:relative;padding-left:27px;color:var(--fg-2);font-size:var(--fs-body)}
 .ticks li::before{content:"";position:absolute;left:0;top:.62em;width:13px;height:2px;
   background:var(--acc);border-radius:2px}
 .blk--alt .ticks li::before{width:9px;height:9px;top:.52em;background:transparent;
   border:2px solid var(--acc);border-radius:50%}
+.abt__tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
 
 /* ---------- geo grid ---------- */
 .geo{margin:0;background:var(--surface);border:1px solid var(--line-2);
