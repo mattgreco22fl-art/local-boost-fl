@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local Boost FL | Local search for Northeast Florida businesses</title>
+<meta name="description" content="Local Boost FL puts independently owned businesses in Northeast Florida and Gainesville into the local map results, and keeps them there. Month to month, no contracts.">
+<meta name="theme-color" content="#F5F6FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#08112E" media="(prefers-color-scheme: dark)">
+<link rel="preload" as="font" type="font/woff2" href="fonts/bricolage-grotesque-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/inter-tight-latin.woff2" crossorigin>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- Icon sprite. Custom line-art on one theme: upward momentum. Stroke 1.6, round caps. -->
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-star" viewBox="0 0 24 24">
+    <path d="M12 2.6l2.88 5.84 6.44.94-4.66 4.54 1.1 6.42L12 17.31l-5.76 3.03 1.1-6.42L2.68 9.38l6.44-.94z"/>
+  </symbol>
+  <symbol id="i-profile" viewBox="0 0 24 24">
+    <rect x="3" y="4.5" width="18" height="15" rx="2.6"/><path d="M7 9h5.5"/>
+    <path d="M7 16.2l3.2-3.2 2.2 2.2L17 10.4"/><path d="M17 13.6v-3.2h-3.2"/>
+  </symbol>
+  <symbol id="i-reply" viewBox="0 0 24 24">
+    <path d="M20.5 11.6a7.6 7.6 0 0 1-7.6 7.6H8.4L4 21.6l1-3.7a7.6 7.6 0 1 1 15.5-6.3Z"/>
+    <path d="M8.4 13.4l2.4-2.9 2 2 3-3.9"/>
+  </symbol>
+  <symbol id="i-listings" viewBox="0 0 24 24">
+    <path d="M4 7h11M4 12h11M4 17h6"/><path d="M15.4 17.1l2.1 2.1L22 14.6"/>
+  </symbol>
+  <symbol id="i-reviews" viewBox="0 0 24 24">
+    <path d="M12 3.2l2.5 5.1 5.6.82-4.05 3.95.96 5.58L12 16.02l-5.01 2.65.96-5.58L3.9 9.14l5.6-.82z"/>
+    <path d="M12 13.4V8.6"/><path d="M9.9 10.7 12 8.6l2.1 2.1"/>
+  </symbol>
+  <symbol id="i-report" viewBox="0 0 24 24">
+    <path d="M3.5 20h17"/><rect x="5" y="12.5" width="3.6" height="5" rx="1"/>
+    <rect x="10.2" y="9" width="3.6" height="8.5" rx="1"/><rect x="15.4" y="4.6" width="3.6" height="12.9" rx="1"/>
+  </symbol>
+  <symbol id="i-compete" viewBox="0 0 24 24">
+    <path d="M3 17.2l5.2-4.2 3.6 2 8.2-8.4"/><path d="M20 10.6V6.6h-4"/>
+    <path d="M3 21h18" opacity=".45"/>
+  </symbol>
+  <symbol id="i-rise" viewBox="0 0 24 24">
+    <path d="M3.5 20h17"/><path d="M5.5 16.5v-3.2M11 16.5V9.4M16.5 16.5V5.6"/>
+    <path d="M19.4 8.5V5.2h-3.3"/>
+  </symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M5.5 9.2 12 15.4l6.5-6.2"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.3"/><path d="M15.4 15.4 20 20"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 19 19 5"/><path d="M9 5h10v10"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21.5s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z"/><circle cx="12" cy="10.3" r="2.6"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M8.4 3.6 10.6 8l-2 2.2a12 12 0 0 0 5.2 5.2l2.2-2 4.4 2.2-.6 3a2 2 0 0 1-2.2 1.6C10.4 19.4 4.6 13.6 3.6 6.4A2 2 0 0 1 5.2 4.2Z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.4"/><path d="m3.8 6.6 8.2 6 8.2-6"/></symbol>
+</svg>
+
+<div id="top-sentinel" aria-hidden="true"></div>
+
+<header class="hdr" id="hdr">
+  <div class="hdr__in">
+    <a class="brand" href="#top" aria-label="Local Boost FL, back to top">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 28 28" fill="none"><path d="M3 24h22" stroke-width="2.1" stroke-linecap="round"/><path d="M7.5 20V15M14 20V10.5M20.5 20V5.5" stroke-width="2.6" stroke-linecap="round"/><path d="M24.4 9.2V4.4h-4.8" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="brand__wm">Local Boost<span class="brand__fl">FL</span></span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Main">
+      <ul class="nav__list">
+        <li><a href="#gap">The problem</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#process">Process</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+      </ul>
+      <a class="btn btn--sm btn--solid nav__cta" href="#contact">Check my ranking</a>
+    </nav>
+
+    <button class="burger" id="burger" aria-expanded="false" aria-controls="nav" aria-label="Open menu">
+      <span class="burger__box" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ========== HERO : asymmetric split ========== -->
+<section class="hero" id="top">
+  <div class="hero__grid wrap">
+    <div class="hero__copy">
+      <h1 class="hero__h">On a simple Google search, only three businesses show up. Make sure one of them is yours.</h1>
+      <p class="hero__sub">We get independently owned Florida businesses into the local map results, and we keep them there.</p>
+      <div class="hero__cta">
+        <a class="btn btn--solid" href="#contact">Check my ranking</a>
+        <a class="btn btn--ghost" href="#services">See services</a>
+      </div>
+    </div>
+
+    <div class="hero__vis rv" data-rv>
+      <p class="vh">Illustration: a local map search for roof repair in Jacksonville, where the client business Ortega River Roofing holds the first of three map positions with a 4.9 star rating from 212 reviews.</p>
+      <figure class="serp serp--win" aria-hidden="true">
+        <div class="serp__bar">
+          <svg class="serp__mag" viewBox="0 0 24 24"><use href="#i-search"/></svg>
+          <span class="serp__q">roof repair near me</span>
+          <span class="serp__loc"><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg>Jacksonville, FL</span>
+        </div>
+
+        <div class="serp__map">
+          <svg viewBox="0 0 640 190" preserveAspectRatio="xMidYMid slice" role="presentation">
+            <rect width="640" height="190" class="mp-land"/>
+            <path d="M-10 138 C 90 120, 150 62, 250 66 C 350 70, 400 128, 520 118 C 590 112, 630 96, 650 88 L650 200 L-10 200Z" class="mp-water"/>
+            <path d="M62 -10 C 78 40, 40 70, 58 116 L 34 200 L 130 200 L 148 96 C 120 52, 132 20, 118 -10Z" class="mp-park"/>
+            <g class="mp-road-lg"><path d="M-10 46 H650"/><path d="M212 -10 V200"/><path d="M448 -10 V200"/></g>
+            <g class="mp-road-sm"><path d="M-10 96 H650"/><path d="M-10 158 H650"/><path d="M118 -10 V200"/><path d="M320 -10 V200"/><path d="M556 -10 V200"/><path d="M212 118 L448 46"/></g>
+            <g class="mp-pin mp-pin--me"><circle cx="322" cy="94" r="17"/><text x="322" y="100">1</text></g>
+            <g class="mp-pin"><circle cx="196" cy="146" r="14"/><text x="196" y="151">2</text></g>
+            <g class="mp-pin"><circle cx="486" cy="52" r="14"/><text x="486" y="57">3</text></g>
+          </svg>
+        </div>
+
+        <ol class="serp__list">
+          <li class="serp__row is-me">
+            <span class="serp__rank">1</span>
+            <div class="serp__body">
+              <p class="serp__name">Ortega River Roofing</p>
+              <p class="serp__meta">
+                <span class="serp__score">4.9</span>
+                <span class="stars" style="--v:4.9"><span class="stars__on"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span><span class="stars__off"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span></span>
+                <span class="serp__ct">(212)</span>
+              </p>
+              <p class="serp__sub">Roofing contractor <span class="dot"></span> 1.2 mi</p>
+              <p class="serp__chips"><span class="chip chip--open">Open now</span><span class="chip">Closes 6 PM</span></p>
+            </div>
+            <div class="serp__act"><span class="pill">Call</span><span class="pill">Directions</span></div>
+          </li>
+          <li class="serp__row">
+            <span class="serp__rank">2</span>
+            <div class="serp__body">
+              <p class="serp__name">Baymeadows Roof &amp; Gutter</p>
+              <p class="serp__meta">
+                <span class="serp__score">4.5</span>
+                <span class="stars" style="--v:4.5"><span class="stars__on"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span><span class="stars__off"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span></span>
+                <span class="serp__ct">(88)</span>
+              </p>
+              <p class="serp__sub">Roofing contractor <span class="dot"></span> 2.6 mi</p>
+              <p class="serp__chips"><span class="chip chip--open">Open now</span></p>
+            </div>
+            <div class="serp__act"><span class="pill">Call</span><span class="pill">Directions</span></div>
+          </li>
+          <li class="serp__row">
+            <span class="serp__rank">3</span>
+            <div class="serp__body">
+              <p class="serp__name">Trestle Exteriors</p>
+              <p class="serp__meta">
+                <span class="serp__score">4.3</span>
+                <span class="stars" style="--v:4.3"><span class="stars__on"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span><span class="stars__off"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span></span>
+                <span class="serp__ct">(61)</span>
+              </p>
+              <p class="serp__sub">Roofing contractor <span class="dot"></span> 3.4 mi</p>
+              <p class="serp__chips"><span class="chip">Closed</span></p>
+            </div>
+            <div class="serp__act"><span class="pill">Call</span><span class="pill">Directions</span></div>
+          </li>
+        </ol>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MARQUEE : the page's only one ========== -->
+<section class="mq" aria-label="Business types we work with">
+  <div class="mq__track">
+    <ul class="mq__set">
+      <li>Roofing</li><li>HVAC</li><li>Dental</li><li>Auto repair</li><li>Taquerias</li>
+      <li>Landscaping</li><li>Plumbing</li><li>Boat repair</li><li>Pest control</li>
+      <li>Chiropractic</li><li>Coffee shops</li><li>Flooring</li><li>Pool service</li>
+      <li>Barbershops</li><li>Pressure washing</li><li>Med spas</li>
+    </ul>
+    <ul class="mq__set" aria-hidden="true">
+      <li>Roofing</li><li>HVAC</li><li>Dental</li><li>Auto repair</li><li>Taquerias</li>
+      <li>Landscaping</li><li>Plumbing</li><li>Boat repair</li><li>Pest control</li>
+      <li>Chiropractic</li><li>Coffee shops</li><li>Flooring</li><li>Pool service</li>
+      <li>Barbershops</li><li>Pressure washing</li><li>Med spas</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ========== BLOCK A : visual left, text right ========== -->
+<section class="blk" id="gap">
+  <div class="wrap blk__grid">
+    <div class="blk__vis rv" data-rv>
+      <p class="vh">Illustration: the same search, where three competitors hold the map positions and the client business sits at number nine, greyed out, below a "more places" divider.</p>
+      <figure class="serp serp--bury" aria-hidden="true">
+        <div class="serp__bar">
+          <svg class="serp__mag" viewBox="0 0 24 24"><use href="#i-search"/></svg>
+          <span class="serp__q">roof repair near me</span>
+          <span class="serp__loc"><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg>Jacksonville, FL</span>
+        </div>
+        <ol class="serp__list">
+          <li class="serp__row">
+            <span class="serp__rank">1</span>
+            <div class="serp__body">
+              <p class="serp__name">Baymeadows Roof &amp; Gutter</p>
+              <p class="serp__meta"><span class="serp__score">4.5</span>
+                <span class="stars" style="--v:4.5"><span class="stars__on"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span><span class="stars__off"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span></span>
+                <span class="serp__ct">(88)</span></p>
+              <p class="serp__sub">Roofing contractor <span class="dot"></span> 2.6 mi</p>
+            </div>
+          </li>
+          <li class="serp__row">
+            <span class="serp__rank">2</span>
+            <div class="serp__body">
+              <p class="serp__name">Trestle Exteriors</p>
+              <p class="serp__meta"><span class="serp__score">4.3</span>
+                <span class="stars" style="--v:4.3"><span class="stars__on"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span><span class="stars__off"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span></span>
+                <span class="serp__ct">(61)</span></p>
+              <p class="serp__sub">Roofing contractor <span class="dot"></span> 3.4 mi</p>
+            </div>
+          </li>
+          <li class="serp__row">
+            <span class="serp__rank">3</span>
+            <div class="serp__body">
+              <p class="serp__name">Cedar Point Roofworks</p>
+              <p class="serp__meta"><span class="serp__score">4.2</span>
+                <span class="stars" style="--v:4.2"><span class="stars__on"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span><span class="stars__off"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span></span>
+                <span class="serp__ct">(47)</span></p>
+              <p class="serp__sub">Roofing contractor <span class="dot"></span> 5.1 mi</p>
+            </div>
+          </li>
+        </ol>
+
+        <p class="serp__more">More places</p>
+
+        <ol class="serp__list serp__list--thin" start="4">
+          <li class="serp__row is-thin"><span class="serp__rank">4</span><div class="serp__body"><p class="serp__name">Anchor Ridge Contracting</p></div></li>
+          <li class="serp__row is-thin"><span class="serp__rank">5</span><div class="serp__body"><p class="serp__name">Palmetto Roof Co.</p></div></li>
+          <li class="serp__row is-thin"><span class="serp__rank">6</span><div class="serp__body"><p class="serp__name">Duval Shingle Works</p></div></li>
+          <li class="serp__row is-thin"><span class="serp__rank">7</span><div class="serp__body"><p class="serp__name">Sawgrass Exterior</p></div></li>
+          <li class="serp__row is-thin"><span class="serp__rank">8</span><div class="serp__body"><p class="serp__name">Northbank Roofing</p></div></li>
+          <li class="serp__row is-thin is-you">
+            <span class="serp__rank">9</span>
+            <div class="serp__body">
+              <p class="serp__name">Ortega River Roofing</p>
+              <p class="serp__you">This is you</p>
+            </div>
+          </li>
+        </ol>
+      </figure>
+    </div>
+
+    <div class="blk__copy rv" data-rv>
+      <h2 class="h2">You are on page one. Just not the part anyone reads.</h2>
+      <p class="lead">The map results show three businesses. Number four and down sit behind a tap that most people never make.</p>
+      <p class="blk__kick">What we usually find</p>
+      <ul class="ticks">
+        <li>A primary category set to something that does not match what people search</li>
+        <li>An old suite number or a disconnected phone still live in a dozen directories</li>
+        <li>Reviews sitting unanswered for eight months</li>
+        <li>No photos or posts since the day the profile was claimed</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ========== BLOCK B : text left, visual right ========== -->
+<section class="blk blk--alt">
+  <div class="wrap blk__grid blk__grid--flip">
+    <div class="blk__copy rv" data-rv>
+      <h2 class="h2">Ranking is not one number. It is a map.</h2>
+      <p class="lead">You show up differently in every neighborhood you serve. We measure the whole service area, then work the gaps.</p>
+      <ul class="ticks">
+        <li>Top three coverage across your service area, not just at your own front door</li>
+        <li>Movement you can point to on a map, month over month</li>
+        <li>Calls and direction requests tracked next to the ranking change</li>
+        <li>A clear read on which ZIP codes still need the work</li>
+      </ul>
+    </div>
+
+    <div class="blk__vis rv" data-rv>
+      <p class="vh">Illustration: two five by five grids of ranking positions across a service area. In March most of the grid sits between eleven and twenty. Five months later most of the grid sits between one and four.</p>
+      <figure class="geo" aria-hidden="true">
+        <div class="geo__pair">
+          <div class="geo__one">
+            <p class="geo__cap">March</p>
+            <div class="grid5">
+              <span class="gc g5">18</span><span class="gc g5">16</span><span class="gc g4">12</span><span class="gc g5">17</span><span class="gc g5">20</span>
+              <span class="gc g5">15</span><span class="gc g4">11</span><span class="gc g3">8</span><span class="gc g4">13</span><span class="gc g5">19</span>
+              <span class="gc g4">10</span><span class="gc g3">7</span><span class="gc g2">4</span><span class="gc g3">9</span><span class="gc g4">14</span>
+              <span class="gc g5">16</span><span class="gc g4">12</span><span class="gc g3">6</span><span class="gc g4">11</span><span class="gc g5">18</span>
+              <span class="gc g5">20</span><span class="gc g5">17</span><span class="gc g4">13</span><span class="gc g5">16</span><span class="gc g5">20</span>
+            </div>
+          </div>
+          <span class="geo__arrow"><svg viewBox="0 0 24 24"><use href="#i-arrow"/></svg></span>
+          <div class="geo__one">
+            <p class="geo__cap">August</p>
+            <div class="grid5">
+              <span class="gc g3">6</span><span class="gc g2">4</span><span class="gc g2">3</span><span class="gc g2">4</span><span class="gc g3">7</span>
+              <span class="gc g2">4</span><span class="gc g1">2</span><span class="gc g1">1</span><span class="gc g1">2</span><span class="gc g2">5</span>
+              <span class="gc g2">3</span><span class="gc g1">1</span><span class="gc g1">1</span><span class="gc g1">1</span><span class="gc g2">3</span>
+              <span class="gc g2">4</span><span class="gc g1">1</span><span class="gc g1">2</span><span class="gc g1">2</span><span class="gc g2">4</span>
+              <span class="gc g3">8</span><span class="gc g2">5</span><span class="gc g2">3</span><span class="gc g2">4</span><span class="gc g3">6</span>
+            </div>
+          </div>
+        </div>
+        <p class="geo__key"><span class="gc gc--k g1"></span> Top 3 <span class="gc gc--k g3"></span> 5 to 10 <span class="gc gc--k g5"></span> 15 and below</p>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ========== STATS : asymmetric hairline row ========== -->
+<section class="stats">
+  <div class="wrap stats__grid">
+    <div class="stat rv" data-rv>
+      <p class="stat__n">3</p>
+      <p class="stat__t">Businesses listed in the local map results before a customer has to tap for more.</p>
+    </div>
+    <div class="stat rv" data-rv style="--d:.08s">
+      <p class="stat__n">40<span class="stat__plus">+</span></p>
+      <p class="stat__t">Directories, data aggregators, and industry sites we correct and keep in sync.</p>
+    </div>
+    <div class="stat rv" data-rv style="--d:.16s">
+      <p class="stat__n">0</p>
+      <p class="stat__t">Contracts. Month to month, and your listings stay yours if you leave.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SERVICES : stacked expandable rows ========== -->
+<section class="svcs" id="services">
+  <div class="wrap">
+    <h2 class="h2 svcs__h rv" data-rv>What we actually do.</h2>
+
+    <div class="svcs__list" id="svc-list">
+
+      <article class="svc rv" data-rv>
+        <h3 class="svc__hd">
+          <button class="svc__btn" id="s1b" aria-expanded="false" aria-controls="s1p">
+            <span class="svc__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-profile"/></svg></span>
+            <span class="svc__txt">
+              <span class="svc__name">Business Profile optimization</span>
+              <span class="svc__sum">Your map listing, built to get picked.</span>
+            </span>
+            <span class="svc__chev" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-chev"/></svg></span>
+          </button>
+        </h3>
+        <div class="svc__panel" id="s1p" role="region" aria-labelledby="s1b">
+          <div class="svc__inner">
+            <p>Most owners fill the profile out once and never touch it again. We treat it like a storefront window. Categories, services, service areas, hours, photos and posts, all set correctly and kept current.</p>
+            <ul class="deliv">
+              <li>Primary and secondary categories chosen from what actually ranks in your market</li>
+              <li>Complete services, service areas, attributes, and hours, holidays included</li>
+              <li>Fresh photos and weekly posts published for you</li>
+              <li>Questions and answers seeded with what customers really ask</li>
+            </ul>
+            <p class="why"><span class="why__k">Why it moves rank</span> Category and completeness are two of the strongest local signals, and the two most often set wrong.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="svc rv" data-rv>
+        <h3 class="svc__hd">
+          <button class="svc__btn" id="s2b" aria-expanded="false" aria-controls="s2p">
+            <span class="svc__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-reply"/></svg></span>
+            <span class="svc__txt">
+              <span class="svc__name">Review response management</span>
+              <span class="svc__sum">Every review answered, in your voice, inside a day.</span>
+            </span>
+            <span class="svc__chev" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-chev"/></svg></span>
+          </button>
+        </h3>
+        <div class="svc__panel" id="s2p" role="region" aria-labelledby="s2b">
+          <div class="svc__inner">
+            <p>We write and publish a reply to every review you get, the good ones and especially the bad ones. Written to sound like you talking, not like a corporate script.</p>
+            <ul class="deliv">
+              <li>Replies to all new reviews within one business day</li>
+              <li>A tone guide built from how you actually talk to customers</li>
+              <li>Anything serious comes to you before it gets answered</li>
+              <li>Backfill of unanswered reviews from the last twelve months</li>
+            </ul>
+            <p class="why"><span class="why__k">Why it moves rank</span> Reply text is indexed like any other content on your profile, and an answered profile reads as an active business.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="svc rv" data-rv>
+        <h3 class="svc__hd">
+          <button class="svc__btn" id="s3b" aria-expanded="false" aria-controls="s3p">
+            <span class="svc__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-listings"/></svg></span>
+            <span class="svc__txt">
+              <span class="svc__name">Listing consistency</span>
+              <span class="svc__sum">One name, one address, one phone, everywhere.</span>
+            </span>
+            <span class="svc__chev" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-chev"/></svg></span>
+          </button>
+        </h3>
+        <div class="svc__panel" id="s3p" role="region" aria-labelledby="s3b">
+          <div class="svc__inner">
+            <p>Your business is listed in dozens of directories you have never logged into. An old suite number, a disconnected phone, a name from before the rebrand. We find every version and make them match.</p>
+            <ul class="deliv">
+              <li>Audit across 40 or more directories, data aggregators, and industry sites</li>
+              <li>Corrections submitted and tracked through to confirmation</li>
+              <li>Duplicate and unclaimed listings merged or removed</li>
+              <li>A quarterly re-check so it stays clean</li>
+            </ul>
+            <p class="why"><span class="why__k">Why it moves rank</span> Conflicting information lowers confidence in your business data, and lower confidence means lower placement.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="svc rv" data-rv>
+        <h3 class="svc__hd">
+          <button class="svc__btn" id="s4b" aria-expanded="false" aria-controls="s4p">
+            <span class="svc__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-reviews"/></svg></span>
+            <span class="svc__txt">
+              <span class="svc__name">Review generation</span>
+              <span class="svc__sum">A steady flow of new reviews, without nagging anyone.</span>
+            </span>
+            <span class="svc__chev" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-chev"/></svg></span>
+          </button>
+        </h3>
+        <div class="svc__panel" id="s4p" role="region" aria-labelledby="s4b">
+          <div class="svc__inner">
+            <p>A simple system that asks happy customers at the right moment, after the job is finished rather than while you are still on site. No incentives and no gating, so nothing puts your profile at risk.</p>
+            <ul class="deliv">
+              <li>A branded review link plus printed QR cards for the counter or the truck</li>
+              <li>Text and email follow ups timed to your job cycle</li>
+              <li>A one page script so your crew knows when and how to ask</li>
+              <li>Monthly read on review volume, rating trend, and what customers keep mentioning</li>
+            </ul>
+            <p class="why"><span class="why__k">Why it moves rank</span> Both count and recency feed local ranking. A profile earning reviews every week beats one that earned fifty in 2021.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="svc rv" data-rv>
+        <h3 class="svc__hd">
+          <button class="svc__btn" id="s5b" aria-expanded="false" aria-controls="s5p">
+            <span class="svc__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-report"/></svg></span>
+            <span class="svc__txt">
+              <span class="svc__name">Monthly ranking reports</span>
+              <span class="svc__sum">Where you rank, in plain English, on one page.</span>
+            </span>
+            <span class="svc__chev" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-chev"/></svg></span>
+          </button>
+        </h3>
+        <div class="svc__panel" id="s5p" role="region" aria-labelledby="s5b">
+          <div class="svc__inner">
+            <p>One page, once a month. Where you rank for the searches that bring in paying work, how that changed, what we did, and what is next. No dashboard to log into and no jargon.</p>
+            <ul class="deliv">
+              <li>Grid ranking maps for your top search terms across the service area</li>
+              <li>Calls, direction requests, and website clicks from your profile</li>
+              <li>A short written summary of what moved and why</li>
+              <li>The specific work already scheduled for the coming month</li>
+            </ul>
+            <p class="why"><span class="why__k">Why it moves rank</span> Grid data shows which neighborhoods you are losing, so the next month of work goes where it pays.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="svc rv" data-rv>
+        <h3 class="svc__hd">
+          <button class="svc__btn" id="s6b" aria-expanded="false" aria-controls="s6p">
+            <span class="svc__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-compete"/></svg></span>
+            <span class="svc__txt">
+              <span class="svc__name">Competitor tracking</span>
+              <span class="svc__sum">Know exactly who is above you, and why.</span>
+            </span>
+            <span class="svc__chev" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-chev"/></svg></span>
+          </button>
+        </h3>
+        <div class="svc__panel" id="s6p" role="region" aria-labelledby="s6b">
+          <div class="svc__inner">
+            <p>We track the businesses outranking you across your service area and break down what they are doing differently. Categories, review pace, photos, posting habits, and where their listings are simply stronger than yours.</p>
+            <ul class="deliv">
+              <li>Up to five competitors tracked continuously</li>
+              <li>Side by side review count, rating, and growth rate</li>
+              <li>An alert when someone overtakes you on a priority term</li>
+              <li>A gap list ordered by effort against likely impact</li>
+            </ul>
+            <p class="why"><span class="why__k">Why it moves rank</span> Local ranking is relative. You do not need to be perfect, only better than the three businesses currently above you.</p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== PROCESS : sticky heading + steps ========== -->
+<section class="proc" id="process">
+  <div class="wrap proc__grid">
+    <div class="proc__side">
+      <h2 class="h2 rv" data-rv>How the first ninety days go.</h2>
+      <span class="proc__mark rv" data-rv aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-rise"/></svg></span>
+    </div>
+    <ol class="proc__steps">
+      <li class="step rv" data-rv>
+        <span class="step__n">01</span>
+        <div class="step__b">
+          <h3 class="step__h">Audit</h3>
+          <p>We check where you rank right now across your service area, pull every listing carrying your name, and find what is holding you down. You get the findings whether or not you hire us.</p>
+        </div>
+      </li>
+      <li class="step rv" data-rv>
+        <span class="step__n">02</span>
+        <div class="step__b">
+          <h3 class="step__h">Fix the foundation</h3>
+          <p>Categories, services, hours, photos, and every directory listing corrected and confirmed. This is the unglamorous part, and it is the part that moves rankings most.</p>
+        </div>
+      </li>
+      <li class="step rv" data-rv>
+        <span class="step__n">03</span>
+        <div class="step__b">
+          <h3 class="step__h">Build proof</h3>
+          <p>Reviews start arriving on a schedule and every one gets answered. Your profile stops looking abandoned and starts looking like a business people are actually using.</p>
+        </div>
+      </li>
+      <li class="step rv" data-rv>
+        <span class="step__n">04</span>
+        <div class="step__b">
+          <h3 class="step__h">Report and press</h3>
+          <p>A one page report every month, competitor gaps reviewed, and next month's work already booked. We keep pressing where the grid says you are still weak.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ========== PRICING : two tiers ========== -->
+<section class="price" id="pricing">
+  <div class="wrap">
+    <h2 class="h2 price__h rv" data-rv>Two plans. Both month to month.</h2>
+    <div class="price__grid">
+
+      <article class="tier rv" data-rv>
+        <h3 class="tier__name">Boost</h3>
+        <p class="tier__cost"><span class="tier__amt">$299</span><span class="tier__per">/mo</span></p>
+        <p class="tier__for">For a single location that needs the foundation fixed and then kept clean.</p>
+        <ul class="tier__list">
+          <li>Business Profile optimization and monthly updates</li>
+          <li>Review responses, up to 25 a month</li>
+          <li>Listing consistency across 40 or more directories</li>
+          <li>Monthly ranking report with grid maps</li>
+          <li>Email support, answered the same day</li>
+        </ul>
+        <a class="btn btn--ghost tier__btn" href="#contact">Check my ranking</a>
+      </article>
+
+      <article class="tier tier--pro rv" data-rv style="--d:.08s">
+        <h3 class="tier__name">Boost Pro</h3>
+        <p class="tier__cost"><span class="tier__amt">$499</span><span class="tier__per">/mo</span></p>
+        <p class="tier__for">For a crowded market where you need to take share from somebody specific.</p>
+        <ul class="tier__list">
+          <li>Everything in Boost</li>
+          <li>Review generation with texts, email, and QR cards</li>
+          <li>Unlimited review responses</li>
+          <li>Competitor tracking on up to five businesses</li>
+          <li>Multiple locations or a wider service area</li>
+          <li>Quarterly strategy call and priority phone support</li>
+        </ul>
+        <a class="btn btn--solid tier__btn" href="#contact">Check my ranking</a>
+      </article>
+
+    </div>
+    <p class="price__note">No setup fee. Cancel any time. Your profile and your listings stay yours.</p>
+  </div>
+</section>
+
+<!-- ========== CLOSING CTA ========== -->
+<section class="cta" id="contact">
+  <div class="wrap cta__in">
+    <h2 class="cta__h rv" data-rv>Find out where you actually rank.</h2>
+    <p class="cta__p rv" data-rv>Send your business name and the city you serve. We run the grid and send back a one page report.</p>
+    <div class="cta__row rv" data-rv>
+      <a class="btn btn--light" href="mailto:matt@localboostfl.com?subject=Ranking%20check">
+        <svg class="btn__i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg>
+        matt@localboostfl.com
+      </a>
+      <a class="btn btn--outline" href="tel:+19045280606">
+        <svg class="btn__i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>
+        (904) 528-0606
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="ft">
+  <div class="wrap ft__in">
+    <p class="ft__b">Local Boost FL</p>
+    <p class="ft__d">Local search for independently owned businesses in Northeast Florida and Gainesville.</p>
+    <nav class="ft__nav" aria-label="Footer">
+      <a href="#services">Services</a>
+      <a href="#pricing">Pricing</a>
+      <a href="mailto:matt@localboostfl.com">Email</a>
+      <a href="tel:+19045280606">Call</a>
+    </nav>
+    <p class="ft__c">&copy; 2026 Local Boost FL</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

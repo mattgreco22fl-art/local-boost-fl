@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audit Generator | Local Boost FL</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+/* =========================================================
+   Local Boost FL — Audit Generator (internal tool)
+   Tokens and patterns lifted from styles.css / THEME.md.
+   Light ground only: the report is a document that prints,
+   so a dark screen preview would not match the paper.
+   ========================================================= */
+:root{
+  --paper:#F5F6FA;
+  --band:#E7EBF4;
+  --navy:#0B1330;
+  --deep:#0B2A80;
+  --slate:#4B5573;
+  --orange:#B8390A;
+  --gold:#C8891F;
+
+  --bg:var(--paper);
+  --bg-alt:var(--band);
+  --fg:var(--navy);
+  --fg-2:var(--slate);
+  --acc:var(--orange);
+  --acc-ink:#fff;
+  --acc-on-dark:#FF7A33;
+  --line:color-mix(in srgb, var(--navy) 15%, transparent);
+  --line-2:color-mix(in srgb, var(--navy) 9%, transparent);
+  --surface:#FFFFFF;
+  --surface-2:#F2F4FA;
+  --acc-wash:color-mix(in srgb, var(--orange) 9%, var(--paper));
+
+  --r-surface:14px;
+  --r-inner:8px;
+
+  --sh-1:0 1px 2px -1px color-mix(in srgb,var(--navy) 10%,transparent),
+         0 4px 12px -6px color-mix(in srgb,var(--navy) 12%,transparent);
+  --sh-3:0 1px 3px -1px color-mix(in srgb,var(--navy) 8%,transparent),
+         0 26px 56px -30px color-mix(in srgb,var(--navy) 26%,transparent);
+
+  --ff-d:"Bricolage Grotesque","Avenir Next Condensed","Trebuchet MS",sans-serif;
+  --ff-b:"Inter Tight","Helvetica Neue",Arial,sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font-family:var(--ff-b);font-size:.97rem;line-height:1.62;font-weight:400;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:var(--ff-d);font-weight:800;margin:0;
+  letter-spacing:-.032em;line-height:1.02;
+  font-variation-settings:"wdth" 100,"opsz" 60}
+p{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+svg{max-width:100%}
+:where(a,button,input,select,[tabindex]):focus-visible{
+  outline:2.5px solid var(--acc);outline-offset:3px;border-radius:4px}
+.sprite{position:absolute;width:0;height:0;overflow:hidden}
+.sprite symbol{fill:none;stroke:currentColor;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round}
+.sprite #i-star{fill:currentColor;stroke:none}
+.vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;
+  overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+
+/* ---------- buttons (site pattern) ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  min-height:44px;padding:0 22px;border-radius:999px;
+  font-family:var(--ff-b);font-size:.875rem;font-weight:600;
+  text-decoration:none;white-space:nowrap;border:1.5px solid transparent;cursor:pointer;
+  transition:background .22s var(--ease),border-color .22s var(--ease),
+             color .22s var(--ease),transform .12s var(--ease)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn:disabled:active{transform:none}
+.btn--solid{background:var(--acc);color:var(--acc-ink)}
+.btn--solid:not(:disabled):hover{background:color-mix(in srgb,var(--acc) 84%,var(--fg))}
+.btn--ghost{border-color:var(--line);color:var(--fg);background:transparent}
+.btn--ghost:not(:disabled):hover{border-color:var(--acc);color:var(--acc)}
+.btn--sm{min-height:36px;padding:0 16px;font-size:.795rem}
+/* Confirmation state for the clipboard buttons. Orange is the only accent the
+   theme allows, so success borrows it rather than introducing a green. */
+.btn--ghost.is-ok{border-color:var(--acc);color:var(--acc)}
+.btn--ghost.is-bad{border-color:var(--line);color:var(--fg-2)}
+.btn__i{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- app chrome ---------- */
+.appbar{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--bg) 92%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line-2)}
+.appbar__in{display:flex;align-items:center;gap:20px;padding:0 clamp(18px,3vw,34px);height:68px}
+.brand{display:inline-flex;align-items:center;gap:10px}
+.brand__mark{width:26px;height:26px;color:var(--acc);display:block}
+.brand__mark svg{display:block;stroke:currentColor;fill:none}
+.brand__wm{font-family:var(--ff-d);font-weight:800;font-size:1.02rem;letter-spacing:-.03em}
+.brand__fl{color:var(--acc);margin-left:.32em}
+.appbar__tag{font-size:.795rem;color:var(--fg-2);padding-left:20px;
+  border-left:1px solid var(--line-2);align-self:center;line-height:1.3}
+.appbar__acts{margin-left:auto;display:flex;gap:10px;align-items:center}
+
+.app{display:grid;gap:clamp(20px,2.4vw,32px);
+  padding:clamp(20px,2.6vw,34px) clamp(18px,3vw,34px) 80px;
+  align-items:start}
+@media (min-width:1180px){
+  .app{grid-template-columns:minmax(360px,430px) minmax(0,1fr)}
+  .panel{position:sticky;top:88px;max-height:calc(100vh - 116px);overflow-y:auto}
+}
+
+/* ---------- form panel ---------- */
+.panel{background:var(--surface);border:1px solid var(--line-2);
+  border-radius:var(--r-surface);box-shadow:var(--sh-1);
+  padding:clamp(20px,2.4vw,28px)}
+.panel__h{font-size:1.25rem}
+.panel__lead{color:var(--fg-2);font-size:.875rem;margin-top:8px}
+.fset{border:0;padding:0;margin:26px 0 0}
+.fset__lg{font-family:var(--ff-d);font-weight:700;font-size:.82rem;color:var(--fg-2);
+  letter-spacing:.04em;text-transform:uppercase;padding:0;margin-bottom:14px;
+  display:block;width:100%;padding-bottom:8px;border-bottom:1px solid var(--line-2)}
+.f{display:grid;gap:5px;margin-bottom:12px}
+.f__l{font-size:.795rem;font-weight:600;color:var(--fg-2)}
+.f input[type=text],.f input[type=number],.f select{
+  font:inherit;font-size:.9rem;color:var(--fg);background:var(--surface);
+  border:1.5px solid var(--line);border-radius:var(--r-inner);
+  padding:9px 11px;width:100%;min-height:40px;
+  transition:border-color .2s var(--ease)}
+.f input:hover,.f select:hover{border-color:color-mix(in srgb,var(--navy) 28%,transparent)}
+.f input:focus-visible,.f select:focus-visible{outline-offset:1px;border-color:var(--acc)}
+.f input::placeholder{color:color-mix(in srgb,var(--fg-2) 62%,transparent)}
+.f--row{grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:end}
+.f--row .f{margin-bottom:0}
+
+/* competitor table */
+.comps{display:grid;gap:8px}
+.comps__hd{display:grid;grid-template-columns:1fr 62px 74px 40px;gap:8px;
+  font-size:.72rem;font-weight:600;color:var(--fg-2);letter-spacing:.02em;
+  padding:0 2px}
+.comps__hd span:nth-child(n+2){text-align:center}
+.comp{display:grid;grid-template-columns:1fr 62px 74px 40px;gap:8px;align-items:center}
+.comp input[type=text],.comp input[type=number]{
+  font:inherit;font-size:.85rem;color:var(--fg);background:var(--surface);
+  border:1.5px solid var(--line);border-radius:var(--r-inner);
+  padding:7px 9px;width:100%;min-height:38px}
+.comp input[type=number]{text-align:center;font-variant-numeric:tabular-nums}
+.comp input:focus-visible{outline-offset:1px;border-color:var(--acc)}
+.comp__chk{display:grid;place-items:center;min-height:38px}
+input[type=checkbox]{appearance:none;width:19px;height:19px;flex:none;margin:0;
+  border:1.5px solid var(--line);border-radius:5px;background:var(--surface);
+  cursor:pointer;display:grid;place-items:center;
+  transition:background .18s var(--ease),border-color .18s var(--ease)}
+input[type=checkbox]::after{content:"";width:9px;height:5px;
+  border-left:2px solid var(--acc-ink);border-bottom:2px solid var(--acc-ink);
+  transform:rotate(-45deg) scale(0);transition:transform .18s var(--ease);
+  margin-top:-2px}
+input[type=checkbox]:checked{background:var(--acc);border-color:var(--acc)}
+input[type=checkbox]:checked::after{transform:rotate(-45deg) scale(1)}
+
+.gaps{display:grid;gap:10px}
+.gap{display:flex;align-items:flex-start;gap:11px;cursor:pointer;
+  font-size:.875rem;line-height:1.45}
+.gap input{margin-top:2px}
+
+.panel__foot{margin-top:26px;padding-top:20px;border-top:1px solid var(--line-2);
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.panel__err{color:var(--acc);font-size:.795rem;font-weight:600;flex-basis:100%}
+.panel__err:empty{display:none}
+.panel__tools{margin-top:18px;padding-top:18px;border-top:1px solid var(--line-2);
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.panel__note{margin-top:14px;font-size:.75rem;color:var(--fg-2);line-height:1.55}
+.panel__note + .panel__note{margin-top:9px}
+.lnk{font:inherit;font-weight:600;color:var(--acc);background:none;border:0;padding:0;
+  cursor:pointer;text-decoration:underline;text-underline-offset:2px;
+  text-decoration-thickness:1px;
+  text-decoration-color:color-mix(in srgb,var(--acc) 40%,transparent);
+  transition:text-decoration-color .2s var(--ease)}
+.lnk:hover{text-decoration-color:var(--acc)}
+
+/* ---------- stage + sheet ---------- */
+.stage{display:grid;justify-items:center}
+.sheet{width:100%;max-width:760px;background:var(--surface);
+  border:1px solid var(--line-2);border-radius:var(--r-surface);
+  box-shadow:var(--sh-3);overflow:hidden}
+.empty{display:grid;place-items:center;gap:14px;text-align:center;
+  padding:clamp(60px,10vw,120px) 30px;color:var(--fg-2)}
+.empty svg{width:38px;height:38px;color:var(--acc);fill:none;stroke:currentColor;
+  stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.empty p{font-size:.9rem;max-width:34ch}
+
+/* ---------- report ---------- */
+.rep{padding:clamp(26px,3.4vw,40px)}
+.rep__hd{display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;
+  padding-bottom:20px;border-bottom:2px solid var(--fg)}
+.rep__meta{margin-left:auto;text-align:right;font-size:.795rem;color:var(--fg-2);
+  line-height:1.5}
+.rep__kick{font-family:var(--ff-d);font-weight:700;font-size:.78rem;color:var(--acc);
+  letter-spacing:.06em;text-transform:uppercase;margin-top:22px}
+.rep__h1{font-size:clamp(1.7rem,1.1rem + 1.9vw,2.35rem);max-width:19ch;margin-top:9px;
+  font-variation-settings:"wdth" 96,"opsz" 96}
+.rep__lead{font-size:1.02rem;color:var(--fg-2);margin-top:14px;max-width:52ch;line-height:1.55}
+
+.rep__sec{margin-top:clamp(28px,3.4vw,40px)}
+.rep__h2{font-size:1.42rem;max-width:30ch}
+.rep__cap{font-size:.795rem;color:var(--fg-2);margin-top:8px;max-width:56ch}
+
+/* serp mockup — pattern from index.html */
+.serp{margin:18px 0 0;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-surface);overflow:hidden}
+.serp__bar{display:flex;align-items:center;gap:10px;padding:12px 15px;
+  border-bottom:1px solid var(--line-2);background:var(--surface-2)}
+.serp__mag{width:16px;height:16px;flex:none;color:var(--fg-2);stroke:currentColor;
+  fill:none;stroke-width:1.6}
+.serp__q{font-size:.875rem;font-weight:500;color:var(--fg)}
+.serp__loc{margin-left:auto;display:inline-flex;align-items:center;gap:5px;
+  font-size:.795rem;color:var(--fg-2)}
+.serp__loc svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.6}
+
+.serp__map{height:150px;border-bottom:1px solid var(--line-2)}
+.serp__map svg{display:block;width:100%;height:100%}
+.mp-land{fill:#E6E9F1}
+.mp-water{fill:#C3D2EE}
+.mp-park{fill:#DCE2EA}
+.mp-road-lg path{stroke:#fff;stroke-width:7;fill:none}
+.mp-road-sm path{stroke:#fff;stroke-width:3.4;fill:none;opacity:.85}
+.mp-pin circle{fill:#8A93AC}
+.mp-pin text{fill:#fff;font-family:var(--ff-b);font-size:13px;font-weight:600;text-anchor:middle}
+.mp-pin--me circle{fill:var(--acc)}
+.mp-pin--me text{font-size:15px}
+
+.serp__row{display:flex;gap:13px;padding:14px 15px;align-items:flex-start;
+  border-bottom:1px solid var(--line-2)}
+.serp__list>.serp__row:last-child{border-bottom:0}
+.serp__rank{flex:none;width:21px;height:21px;border-radius:var(--r-inner);
+  display:grid;place-items:center;background:var(--bg-alt);color:var(--fg-2);
+  font-size:.72rem;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums}
+.serp__body{min-width:0;flex:1}
+.serp__name{font-family:var(--ff-d);font-weight:700;font-size:.97rem;
+  letter-spacing:-.015em;line-height:1.25}
+.serp__meta{display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap}
+.serp__score{font-size:.795rem;font-weight:600;color:var(--fg)}
+.serp__ct{font-size:.795rem;color:var(--fg-2)}
+.serp__sub{font-size:.795rem;color:var(--fg-2);margin-top:3px;
+  display:flex;align-items:center;gap:7px}
+.dot{width:2.5px;height:2.5px;border-radius:50%;background:currentColor;
+  opacity:.55;display:inline-block}
+.serp__chips{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.chip{font-size:.7rem;font-weight:500;padding:3px 9px;border-radius:999px;
+  background:var(--bg-alt);color:var(--fg-2)}
+.chip--flag{background:color-mix(in srgb,var(--acc) 15%,transparent);color:var(--acc)}
+.serp__act{display:flex;flex-direction:column;gap:6px;flex:none}
+.pill{font-size:.7rem;font-weight:600;padding:5px 13px;border-radius:999px;
+  border:1px solid var(--line);color:var(--fg-2);text-align:center}
+
+.stars{position:relative;display:inline-block;line-height:0;flex:none}
+.stars svg{width:12px;height:12px;display:inline-block;fill:currentColor;stroke:none}
+.stars__off{color:color-mix(in srgb,var(--fg) 20%,transparent)}
+.stars__on{position:absolute;inset:0;overflow:hidden;color:var(--gold);
+  width:calc(var(--v) / 5 * 100%)}
+
+.serp__more{font-size:.795rem;font-weight:600;color:var(--fg-2);
+  padding:10px 15px;border-bottom:1px solid var(--line-2);background:var(--surface-2)}
+.serp__row.is-thin{padding:9px 15px;opacity:.62}
+.serp__row.is-thin .serp__name{font-size:.87rem;font-weight:600}
+.serp__row.is-gap{padding:9px 15px;color:var(--fg-2);font-size:.795rem;
+  background:var(--surface-2);align-items:center}
+.serp__row.is-gap .serp__rank{background:transparent;letter-spacing:.1em}
+
+/* the client's row: the one thing on the page that must not be missable */
+.serp__row.is-client{background:var(--acc-wash);box-shadow:inset 3.5px 0 0 var(--acc);
+  opacity:1;padding:14px 15px}
+.serp__row.is-client .serp__rank{background:var(--acc);color:var(--acc-ink)}
+.serp__row.is-client .serp__name{font-size:.97rem;font-weight:700}
+.serp__you{font-size:.7rem;font-weight:700;color:var(--acc);margin-top:3px;
+  letter-spacing:.08em;text-transform:uppercase}
+
+/* findings */
+.finds{margin-top:20px;display:grid;gap:0;border-top:1px solid var(--line)}
+.find{display:flex;gap:16px;padding:18px 0;border-bottom:1px solid var(--line)}
+.find__ico{flex:none;width:38px;height:38px;border-radius:999px;display:grid;
+  place-items:center;border:1.5px solid var(--line);color:var(--acc)}
+.find__ico svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round}
+.find__b{min-width:0}
+.find__h{font-family:var(--ff-d);font-weight:700;font-size:1.02rem;letter-spacing:-.02em;
+  line-height:1.25}
+.find__p{color:var(--fg-2);font-size:.9rem;margin-top:6px;max-width:58ch}
+.finds__none{color:var(--fg-2);font-size:.9rem;padding:18px 0;border-bottom:1px solid var(--line)}
+
+/* stats */
+.stats{display:grid;gap:24px;margin-top:20px}
+@media (min-width:560px){.stats{grid-template-columns:repeat(3,1fr);column-gap:24px}}
+.stat{border-top:2px solid var(--fg);padding-top:16px}
+.stat__n{font-family:var(--ff-d);font-weight:800;
+  font-size:clamp(2.6rem,1.6rem + 2.6vw,3.5rem);
+  line-height:.86;letter-spacing:-.05em;
+  font-variation-settings:"wdth" 78,"opsz" 96;color:var(--acc);
+  font-variant-numeric:tabular-nums}
+.stat__u{font-size:.44em;vertical-align:super;letter-spacing:0}
+.stat__t{margin-top:12px;color:var(--fg-2);font-size:.83rem;line-height:1.5}
+
+/* closing band */
+.close{margin:clamp(30px,3.6vw,44px) calc(-1 * clamp(26px,3.4vw,40px))
+        calc(-1 * clamp(26px,3.4vw,40px));
+  background:var(--deep);color:#fff;padding:clamp(30px,4vw,44px) clamp(26px,3.4vw,40px)}
+.close__h{font-family:var(--ff-d);font-weight:800;font-size:1.6rem;letter-spacing:-.035em;
+  line-height:1.05;max-width:18ch}
+.close__p{margin-top:14px;max-width:46ch;font-size:.95rem;line-height:1.55;
+  color:color-mix(in srgb,#fff 84%,transparent)}
+.close__grid{margin-top:26px;padding-top:20px;
+  border-top:1px solid color-mix(in srgb,#fff 24%,transparent);
+  display:grid;gap:16px}
+@media (min-width:560px){.close__grid{grid-template-columns:repeat(3,1fr)}}
+.close__k{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--acc-on-dark)}
+.close__v{font-size:.95rem;margin-top:5px;font-weight:500}
+.close :focus-visible{outline-color:var(--acc-on-dark)}
+/* editable placeholders: a dashed underline on screen so they read as fillable,
+   nothing at all on paper. */
+[contenteditable="true"]{border-radius:3px}
+[contenteditable="true"]:not(.close__v){outline-offset:2px}
+.close__v[contenteditable="true"]{
+  border-bottom:1px dashed color-mix(in srgb,#fff 42%,transparent);cursor:text}
+.close__v[contenteditable="true"]:hover{border-bottom-color:var(--acc-on-dark)}
+.edit-note{font-size:.72rem;color:color-mix(in srgb,#fff 60%,transparent);margin-top:18px}
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+@page{size:letter portrait;margin:0.5in}
+
+@media print{
+  /* Backgrounds and tints carry the whole design here — the client row, the
+     closing band, the map. Without this Chrome drops every one of them. */
+  *,*::before,*::after{
+    -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+
+  html,body{background:#fff!important;margin:0;padding:0}
+  .appbar,.panel,.edit-note{display:none!important}
+
+  .app{display:block;padding:0;gap:0}
+  .stage{display:block}
+  .sheet{max-width:none;width:auto;border:0;border-radius:0;
+    box-shadow:none;overflow:visible}
+  .rep{padding:0}
+
+  /* The closing band bled to the sheet edge on screen via negative margins.
+     On paper the sheet edge is the @page margin, so pull it back to zero and
+     give it its own padding instead. */
+  .close{margin:26px 0 0;padding:26px 24px;border-radius:var(--r-surface)}
+
+  /* Atomic units are the individual rows and blocks, not the whole mockup.
+     Holding the entire .serp together needs ~800px it will not always get,
+     which shunts it to its own page and leaves a half-empty one behind it.
+     Letting it split between rows keeps every page full. */
+  .find,.stat,.close,.rep__hd,.serp__row{break-inside:avoid;page-break-inside:avoid}
+  .rep__h1,.rep__h2,.rep__kick,.find__h,.close__h,.rep__cap,
+  .serp__bar,.serp__map,.serp__more{break-after:avoid;page-break-after:avoid}
+  p{orphans:3;widows:3}
+
+  /* Tighter vertical rhythm on paper — screen spacing wastes a page here. */
+  .rep__sec{margin-top:26px}
+  .rep__lead{margin-top:12px;max-width:64ch}
+  .serp{margin-top:14px}
+  .finds,.stats{margin-top:14px}
+  .find{padding:14px 0}
+
+  /* Shadows do not print; borders do. */
+  .serp{box-shadow:none;border:1px solid var(--line)}
+  .serp__row.is-client{box-shadow:none;
+    border-left:3.5px solid var(--acc);padding-left:11.5px}
+
+  .close__v[contenteditable="true"]{border-bottom:0}
+  a{text-decoration:none;color:inherit}
+
+  /* Type down a notch: 10.5pt body reads better on paper than 15.5px does. */
+  .rep__h1{font-size:26pt}
+  .rep__h2{font-size:16pt}
+  .rep__lead{font-size:11pt}
+  .stat__n{font-size:34pt}
+  .close__h{font-size:17pt}
+}
+</style>
+</head>
+<body>
+
+<!-- Icon sprite, same set and conventions as the site. Every <use> site must set
+     fill:none;stroke:currentColor on the referencing <svg>, or it renders solid. -->
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-star" viewBox="0 0 24 24">
+    <path d="M12 2.6l2.88 5.84 6.44.94-4.66 4.54 1.1 6.42L12 17.31l-5.76 3.03 1.1-6.42L2.68 9.38l6.44-.94z"/>
+  </symbol>
+  <symbol id="i-profile" viewBox="0 0 24 24">
+    <rect x="3" y="4.5" width="18" height="15" rx="2.6"/><path d="M7 9h5.5"/>
+    <path d="M7 16.2l3.2-3.2 2.2 2.2L17 10.4"/><path d="M17 13.6v-3.2h-3.2"/>
+  </symbol>
+  <symbol id="i-reply" viewBox="0 0 24 24">
+    <path d="M20.5 11.6a7.6 7.6 0 0 1-7.6 7.6H8.4L4 21.6l1-3.7a7.6 7.6 0 1 1 15.5-6.3Z"/>
+    <path d="M8.4 13.4l2.4-2.9 2 2 3-3.9"/>
+  </symbol>
+  <symbol id="i-listings" viewBox="0 0 24 24">
+    <path d="M4 7h11M4 12h11M4 17h6"/><path d="M15.4 17.1l2.1 2.1L22 14.6"/>
+  </symbol>
+  <symbol id="i-photo" viewBox="0 0 24 24">
+    <rect x="3" y="5" width="18" height="14" rx="2.4"/><circle cx="8.4" cy="10.2" r="1.7"/>
+    <path d="m3.6 17.4 4.6-4.3 3.2 3 3.4-3.6 5.6 5.3"/>
+  </symbol>
+  <symbol id="i-report" viewBox="0 0 24 24">
+    <path d="M3.5 20h17"/><rect x="5" y="12.5" width="3.6" height="5" rx="1"/>
+    <rect x="10.2" y="9" width="3.6" height="8.5" rx="1"/>
+    <rect x="15.4" y="4.6" width="3.6" height="12.9" rx="1"/>
+  </symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M5.5 9.2 12 15.4l6.5-6.2"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.3"/><path d="M15.4 15.4 20 20"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 19 19 5"/><path d="M9 5h10v10"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21.5s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z"/><circle cx="12" cy="10.3" r="2.6"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24">
+    <path d="M7 9V3.8h10V9"/><rect x="3.2" y="9" width="17.6" height="7.6" rx="2"/>
+    <path d="M7 14h10v6.2H7z"/>
+  </symbol>
+  <symbol id="i-dl" viewBox="0 0 24 24">
+    <path d="M12 3.8v11.4"/><path d="M7.6 11l4.4 4.4 4.4-4.4"/><path d="M4.4 19.6h15.2"/>
+  </symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24">
+    <path d="M15 9V5.8A2 2 0 0 0 13 3.8H5.8A2 2 0 0 0 3.8 5.8V13A2 2 0 0 0 5.8 15H9"/>
+    <rect x="9" y="9" width="11.2" height="11.2" rx="2.2"/>
+  </symbol>
+</svg>
+
+<header class="appbar">
+  <div class="appbar__in">
+    <span class="brand">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 28 28" fill="none"><path d="M3 24h22" stroke-width="2.1" stroke-linecap="round"/><path d="M7.5 20V15M14 20V10.5M20.5 20V5.5" stroke-width="2.6" stroke-linecap="round"/><path d="M24.4 9.2V4.4h-4.8" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="brand__wm">Local Boost<span class="brand__fl">FL</span></span>
+    </span>
+    <span class="appbar__tag">Audit Generator &middot; internal</span>
+    <div class="appbar__acts">
+      <button type="button" class="btn btn--ghost btn--sm" id="btnCopy" disabled
+              title="Copy this audit as one row, ready to paste into a tracking spreadsheet">
+        <svg class="btn__i" viewBox="0 0 24 24"><use href="#i-copy"/></svg><span class="btn__t">Copy tracker row</span>
+      </button>
+      <button type="button" class="btn btn--ghost btn--sm" id="btnPrint" disabled>
+        <svg class="btn__i" viewBox="0 0 24 24"><use href="#i-print"/></svg>Print
+      </button>
+      <button type="button" class="btn btn--solid btn--sm" id="btnPdf" disabled>
+        <svg class="btn__i" viewBox="0 0 24 24"><use href="#i-dl"/></svg>Download as PDF
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- ============ FORM ============ -->
+  <form class="panel" id="form" novalidate>
+    <h1 class="panel__h">Build an audit</h1>
+    <p class="panel__lead">Type in what you saw on the search. Nothing is fetched and nothing is saved &mdash; closing the tab clears it.</p>
+
+    <fieldset class="fset">
+      <legend class="fset__lg">The client</legend>
+      <div class="f">
+        <label class="f__l" for="cName">Business name</label>
+        <input type="text" id="cName" placeholder="Ortega River Roofing" autocomplete="off">
+      </div>
+      <div class="f">
+        <label class="f__l" for="cCat">Category</label>
+        <input type="text" id="cCat" placeholder="Roofing contractor" autocomplete="off">
+      </div>
+      <div class="f">
+        <label class="f__l" for="cCity">City</label>
+        <input type="text" id="cCity" placeholder="Jacksonville, FL" autocomplete="off">
+      </div>
+      <div class="f">
+        <label class="f__l" for="cQuery">Search you ran</label>
+        <input type="text" id="cQuery" placeholder="roof repair near me" autocomplete="off">
+      </div>
+      <div class="f f--row">
+        <div class="f">
+          <label class="f__l" for="cPos">Position</label>
+          <input type="number" id="cPos" min="1" max="99" step="1" placeholder="9">
+        </div>
+        <div class="f">
+          <label class="f__l" for="cRating">Rating</label>
+          <input type="number" id="cRating" min="0" max="5" step="0.1" placeholder="4.4">
+        </div>
+        <div class="f">
+          <label class="f__l" for="cReviews">Reviews</label>
+          <input type="number" id="cReviews" min="0" step="1" placeholder="23">
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="fset">
+      <legend class="fset__lg">Who is ranking above them</legend>
+      <div class="comps__hd" aria-hidden="true">
+        <span>Business name</span><span>Rating</span><span>Reviews</span><span title="Profile looks complete">Full</span>
+      </div>
+      <div class="comps" id="comps"></div>
+    </fieldset>
+
+    <fieldset class="fset">
+      <legend class="fset__lg">What is wrong with the client's profile</legend>
+      <div class="gaps" id="gaps"></div>
+    </fieldset>
+
+    <fieldset class="fset">
+      <legend class="fset__lg">Report date</legend>
+      <div class="f">
+        <label class="f__l vh" for="cDate">Report date</label>
+        <input type="text" id="cDate" autocomplete="off">
+      </div>
+    </fieldset>
+
+    <div class="panel__foot">
+      <button type="submit" class="btn btn--solid">
+        <svg class="btn__i" viewBox="0 0 24 24"><use href="#i-report"/></svg>Generate report
+      </button>
+      <button type="button" class="btn btn--ghost btn--sm" id="btnSample">Load sample</button>
+      <button type="button" class="btn btn--ghost btn--sm" id="btnClear">Clear</button>
+      <p class="panel__err" id="err" role="alert"></p>
+    </div>
+
+    <div class="panel__tools">
+      <button type="button" class="btn btn--ghost btn--sm" id="btnSave">Save audit</button>
+      <button type="button" class="btn btn--ghost btn--sm" id="btnOpen">Open audit</button>
+      <input type="file" id="fileIn" accept=".json,application/json" hidden>
+    </div>
+
+    <p class="panel__note">
+      <strong>Save audit</strong> writes this form to a small file. <strong>Open audit</strong> reads
+      one back and regenerates the report, so a re-run in 90 days is a file away instead of a retype.
+    </p>
+    <p class="panel__note">
+      Once a report is generated, <strong>Copy tracker row</strong> puts it on the clipboard as a
+      single tab-separated line &mdash; paste it straight into a row in Excel or Sheets.
+      Starting a new tracking sheet? <button type="button" class="lnk" id="btnHeads">Copy the column headers</button>.
+    </p>
+  </form>
+
+  <!-- ============ REPORT ============ -->
+  <div class="stage">
+    <article class="sheet" id="sheet">
+      <div class="empty" id="empty">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-report"/></svg>
+        <p>Fill in the form and hit <strong>Generate report</strong>. What you see here is what prints.</p>
+      </div>
+    </article>
+  </div>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var COMP_ROWS = 5;
+
+var GAPS = [
+  { id:"replies", icon:"i-reply",
+    label:"No owner responses to reviews",
+    head:"Reviews are going unanswered",
+    body:"People are leaving reviews and nobody is writing back. To a customer reading the profile it looks like the business stopped paying attention, and Google gives less weight to a profile that sits still. Every review should get a short reply, including the good ones." },
+  { id:"profile", icon:"i-profile",
+    label:"Incomplete profile",
+    head:"The profile is only half filled in",
+    body:"Hours, services, the service area and the description are either blank or still set to whatever was there the day the profile was claimed. Those fields are what Google reads to decide which searches this business belongs in, so leaving them empty narrows the searches it can win." },
+  { id:"photos", icon:"i-photo",
+    label:"Outdated photos",
+    head:"The photos are old",
+    body:"The pictures on the profile are dated, or they are stock images rather than real work. Photos are the first thing someone looks at before they call, and profiles that get new ones regularly hold their position better than profiles that never change." },
+  { id:"listings", icon:"i-listings",
+    label:"Inconsistent listing info",
+    head:"The name, address and phone number do not match everywhere",
+    body:"This business is listed with different details on other websites &mdash; an old suite number, a disconnected phone, a slightly different name. Google checks those listings against each other, and when they disagree it trusts the whole profile a little less." }
+];
+
+var SAMPLE = {
+  name:"Ortega River Roofing", cat:"Roofing contractor", city:"Jacksonville, FL",
+  query:"roof repair near me", pos:9, rating:4.4, reviews:23,
+  comps:[
+    { name:"Baymeadows Roof & Gutter", rating:4.5, reviews:88,  full:true  },
+    { name:"Trestle Exteriors",        rating:4.3, reviews:61,  full:true  },
+    { name:"Cedar Point Roofworks",    rating:4.2, reviews:47,  full:false },
+    { name:"Anchor Ridge Contracting", rating:4.6, reviews:134, full:true  },
+    { name:"Palmetto Roof Co.",        rating:4.0, reviews:39,  full:false }
+  ],
+  gaps:["replies","profile","listings"]
+};
+
+var $  = function(s){ return document.querySelector(s); };
+var el = function(id){ return document.getElementById(id); };
+
+/* Everything typed into the form lands in innerHTML, so it all goes through
+   here first. */
+function esc(s){
+  return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+function num(v, fallback){
+  var n = parseFloat(v);
+  return isFinite(n) ? n : fallback;
+}
+function plural(n, one, many){ return n === 1 ? one : many; }
+function today(){
+  return new Date().toLocaleDateString("en-US",
+    { month:"long", day:"numeric", year:"numeric" });
+}
+
+/* ---------- build the form ---------- */
+(function buildForm(){
+  var comps = el("comps"), html = "";
+  for(var i = 0; i < COMP_ROWS; i++){
+    html +=
+      '<div class="comp">' +
+        '<label class="vh" for="k'+i+'">Competitor '+(i+1)+' name</label>' +
+        '<input type="text" id="k'+i+'" data-k="name" data-i="'+i+'" placeholder="Competitor '+(i+1)+'" autocomplete="off">' +
+        '<label class="vh" for="kr'+i+'">Competitor '+(i+1)+' rating</label>' +
+        '<input type="number" id="kr'+i+'" data-k="rating" data-i="'+i+'" min="0" max="5" step="0.1" placeholder="4.5">' +
+        '<label class="vh" for="kc'+i+'">Competitor '+(i+1)+' review count</label>' +
+        '<input type="number" id="kc'+i+'" data-k="reviews" data-i="'+i+'" min="0" step="1" placeholder="88">' +
+        '<span class="comp__chk">' +
+          '<label class="vh" for="kf'+i+'">Competitor '+(i+1)+' profile looks complete</label>' +
+          '<input type="checkbox" id="kf'+i+'" data-k="full" data-i="'+i+'">' +
+        '</span>' +
+      '</div>';
+  }
+  comps.innerHTML = html;
+
+  el("gaps").innerHTML = GAPS.map(function(g){
+    return '<label class="gap"><input type="checkbox" id="g_'+g.id+'" data-gap="'+g.id+'">' +
+           '<span>'+g.label+'</span></label>';
+  }).join("");
+
+  el("cDate").value = today();
+})();
+
+/* ---------- read the form ---------- */
+function readForm(){
+  var comps = [];
+  for(var i = 0; i < COMP_ROWS; i++){
+    var name = el("k"+i).value.trim();
+    if(!name) continue;
+    comps.push({
+      name: name,
+      rating: num(el("kr"+i).value, null),
+      reviews: num(el("kc"+i).value, null),
+      full: el("kf"+i).checked
+    });
+  }
+  return {
+    name: el("cName").value.trim(),
+    cat:  el("cCat").value.trim(),
+    city: el("cCity").value.trim(),
+    query: el("cQuery").value.trim(),
+    pos: Math.max(1, Math.round(num(el("cPos").value, comps.length + 1))),
+    rating: num(el("cRating").value, null),
+    reviews: num(el("cReviews").value, null),
+    date: el("cDate").value.trim(),
+    comps: comps,
+    gaps: GAPS.filter(function(g){ return el("g_" + g.id).checked; })
+  };
+}
+
+/* ---------- pieces ---------- */
+var STAR = '<svg viewBox="0 0 24 24"><use href="#i-star"/></svg>';
+
+function stars(v){
+  if(v == null) return "";
+  var val = Math.max(0, Math.min(5, v));
+  return '<span class="stars" style="--v:' + val + '">' +
+           '<span class="stars__on">'  + STAR.repeat(5) + '</span>' +
+           '<span class="stars__off">' + STAR.repeat(5) + '</span>' +
+         '</span>';
+}
+
+function metaLine(rating, reviews){
+  var out = "";
+  if(rating != null) out += '<span class="serp__score">' + rating.toFixed(1) + '</span>' + stars(rating);
+  if(reviews != null) out += '<span class="serp__ct">(' + reviews.toLocaleString() + ')</span>';
+  return out ? '<p class="serp__meta">' + out + '</p>' : "";
+}
+
+/* Competitors take 1..k in the order they were entered; the client sits at the
+   position that was actually observed. If that leaves a hole between the last
+   competitor and the client, it is filled with a count rather than with names
+   that were never looked up. */
+function buildRows(d){
+  var rows = d.comps.map(function(c){ return { kind:"comp", data:c }; });
+  var at = Math.min(d.pos, rows.length + 1) - 1;
+  var hole = d.pos - rows.length - 1;
+
+  if(hole > 0) rows.push({ kind:"hole", n:hole });
+  rows.splice(hole > 0 ? rows.length : at, 0, { kind:"client", data:d });
+
+  var rank = 0;
+  return rows.map(function(r){
+    if(r.kind === "hole"){ rank += r.n; return r; }
+    rank += 1; r.rank = rank; return r;
+  });
+}
+
+function renderRow(r, d){
+  if(r.kind === "hole"){
+    return '<li class="serp__row is-gap">' +
+             '<span class="serp__rank">&hellip;</span>' +
+             '<div class="serp__body">' + r.n + " more " +
+               plural(r.n, "business", "businesses") + " ahead of " + esc(d.name) +
+             '</div></li>';
+  }
+
+  if(r.kind === "client"){
+    return '<li class="serp__row is-client">' +
+             '<span class="serp__rank">' + r.rank + '</span>' +
+             '<div class="serp__body">' +
+               '<p class="serp__name">' + esc(d.name) + '</p>' +
+               '<p class="serp__you">This is you</p>' +
+               metaLine(d.rating, d.reviews) +
+               (d.cat ? '<p class="serp__sub">' + esc(d.cat) + '</p>' : "") +
+               (d.gaps.length
+                 ? '<p class="serp__chips"><span class="chip chip--flag">' +
+                     d.gaps.length + " " + plural(d.gaps.length, "issue", "issues") +
+                   " found</span></p>"
+                 : "") +
+             '</div></li>';
+  }
+
+  var c = r.data;
+  /* Ranks 4 and down are the "more places" tail: a name and nothing else, the
+     same way Google collapses them. */
+  if(r.rank > 3){
+    return '<li class="serp__row is-thin">' +
+             '<span class="serp__rank">' + r.rank + '</span>' +
+             '<div class="serp__body"><p class="serp__name">' + esc(c.name) + '</p></div>' +
+           '</li>';
+  }
+  return '<li class="serp__row">' +
+           '<span class="serp__rank">' + r.rank + '</span>' +
+           '<div class="serp__body">' +
+             '<p class="serp__name">' + esc(c.name) + '</p>' +
+             metaLine(c.rating, c.reviews) +
+             (d.cat ? '<p class="serp__sub">' + esc(d.cat) + '</p>' : "") +
+             '<p class="serp__chips">' +
+               (c.full ? '<span class="chip">Complete profile</span>'
+                       : '<span class="chip">Thin profile</span>') +
+             '</p>' +
+           '</div>' +
+           '<div class="serp__act"><span class="pill">Call</span><span class="pill">Directions</span></div>' +
+         '</li>';
+}
+
+function renderMap(rows, d){
+  var top = rows.filter(function(r){ return r.kind !== "hole" && r.rank <= 3; });
+  if(!top.length) return "";
+  var spots = [[322,94,17],[196,146,14],[486,52,14]];
+  var pins = top.map(function(r, i){
+    var s = spots[i], me = r.kind === "client";
+    return '<g class="mp-pin' + (me ? " mp-pin--me" : "") + '">' +
+             '<circle cx="' + s[0] + '" cy="' + s[1] + '" r="' + s[2] + '"/>' +
+             '<text x="' + s[0] + '" y="' + (s[1] + (me ? 6 : 5)) + '">' + r.rank + '</text>' +
+           '</g>';
+  }).join("");
+
+  return '<div class="serp__map">' +
+    '<svg viewBox="0 0 640 190" preserveAspectRatio="xMidYMid slice" role="presentation">' +
+      '<rect width="640" height="190" class="mp-land"/>' +
+      '<path d="M-10 138 C 90 120, 150 62, 250 66 C 350 70, 400 128, 520 118 C 590 112, 630 96, 650 88 L650 200 L-10 200Z" class="mp-water"/>' +
+      '<path d="M62 -10 C 78 40, 40 70, 58 116 L 34 200 L 130 200 L 148 96 C 120 52, 132 20, 118 -10Z" class="mp-park"/>' +
+      '<g class="mp-road-lg"><path d="M-10 46 H650"/><path d="M212 -10 V200"/><path d="M448 -10 V200"/></g>' +
+      '<g class="mp-road-sm"><path d="M-10 96 H650"/><path d="M-10 158 H650"/><path d="M118 -10 V200"/><path d="M320 -10 V200"/><path d="M556 -10 V200"/><path d="M212 118 L448 46"/></g>' +
+      pins +
+    '</svg></div>';
+}
+
+function renderSerp(d){
+  var rows = buildRows(d);
+  var head = [], tail = [], seenTail = false;
+
+  rows.forEach(function(r){
+    var isTail = (r.kind === "hole") || (r.rank > 3);
+    if(isTail) seenTail = true;
+    (seenTail ? tail : head).push(renderRow(r, d));
+  });
+
+  return '<figure class="serp">' +
+    '<div class="serp__bar">' +
+      '<svg class="serp__mag" viewBox="0 0 24 24"><use href="#i-search"/></svg>' +
+      '<span class="serp__q">' + esc(d.query || d.cat) + '</span>' +
+      '<span class="serp__loc"><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg>' +
+        esc(d.city) + '</span>' +
+    '</div>' +
+    renderMap(rows, d) +
+    '<ol class="serp__list">' + head.join("") + '</ol>' +
+    (tail.length
+      ? '<p class="serp__more">More places</p><ol class="serp__list">' + tail.join("") + '</ol>'
+      : "") +
+  '</figure>';
+}
+
+function renderFindings(d){
+  if(!d.gaps.length){
+    return '<div class="finds"><p class="finds__none">No profile problems were flagged on this audit. ' +
+           'The gap here is position and reviews, not upkeep.</p></div>';
+  }
+  return '<div class="finds">' + d.gaps.map(function(g){
+    return '<div class="find">' +
+             '<span class="find__ico"><svg viewBox="0 0 24 24"><use href="#' + g.icon + '"/></svg></span>' +
+             '<div class="find__b">' +
+               '<p class="find__h">' + g.head + '</p>' +
+               '<p class="find__p">' + g.body + '</p>' +
+             '</div></div>';
+  }).join("") + '</div>';
+}
+
+/* Competitors typed in are assumed to outrank the client, but a client sitting
+   at position 2 pushes everything after the first one below them. Only the ones
+   genuinely ahead can be described as ahead. */
+function aboveComps(d){
+  if(d.pos > d.comps.length) return d.comps.slice();
+  return d.comps.slice(0, Math.max(0, d.pos - 1));
+}
+
+function renderStats(d){
+  var above = aboveComps(d);
+  /* Two different counts, and conflating them puts a contradiction on the page:
+     `ahead` is how many businesses actually outrank the client, `known` is how
+     many of those were typed in. A client at #9 with 5 competitors entered has
+     8 ahead but only 5 we can say anything about. */
+  var ahead = d.pos - 1;
+  var known = above.length;
+  var withReviews = above.filter(function(c){ return c.reviews != null; });
+  var lead = withReviews.length
+    ? withReviews.reduce(function(a,b){ return a.reviews > b.reviews ? a : b; })
+    : null;
+
+  var s = [];
+
+  /* 1. Review gap */
+  if(lead && d.reviews != null){
+    var gap = lead.reviews - d.reviews;
+    if(gap > 0){
+      s.push({
+        n: gap.toLocaleString(),
+        t: "more reviews on " + esc(lead.name) + " than on your profile. Review count is one of " +
+           "the few ranking signals a customer can see too."
+      });
+    } else {
+      s.push({
+        n: Math.abs(gap).toLocaleString(),
+        t: "more reviews than " + esc(lead.name) + ", the best reviewed business " +
+           (known < ahead ? "we checked above you" : "ahead of you") + ". " +
+           "You are not losing this on reviews, which means the rest is fixable faster."
+      });
+    }
+  } else if(ahead){
+    s.push({ n: ahead, t: plural(ahead, "business is", "businesses are") +
+      " ranking ahead of you for this search." });
+  } else {
+    s.push({
+      n: d.reviews != null ? d.reviews.toLocaleString() : "#1",
+      t: "reviews on your profile. Nothing in this search is ahead of you, and that " +
+         "number is a large part of why."
+    });
+  }
+
+  /* 2. Position */
+  s.push({
+    n: "#" + d.pos,
+    t: d.pos <= 3
+      ? "where you sit today. You are in the three that show without a tap &mdash; the job is holding it."
+      : "where you sit today. Only the top three show without a tap, so " +
+        (d.pos - 3) + " " + plural(d.pos - 3, "place", "places") + " " +
+        plural(d.pos - 3, "separates", "separate") + " you from being seen."
+  });
+
+  /* 3. Profile completeness — client's, against what the competition is running */
+  var passed = GAPS.length - d.gaps.length;
+  var pct = Math.round(passed / GAPS.length * 100);
+  var fullComps = above.filter(function(c){ return c.full; }).length;
+
+  var compare = "";
+  if(known === 1){
+    compare = (known < ahead ? "The one business above you we checked "
+                             : "The one business ahead of you ") +
+              (fullComps ? "has" : "does not have") +
+              " a profile that looks fully filled in.";
+  } else if(known > 1){
+    compare = (known < ahead
+      ? "Of the " + known + " above you we checked, " + fullComps + " "
+      : fullComps + " of the " + known + " businesses ahead of you ") +
+      plural(fullComps, "has", "have") + " a profile that looks fully filled in.";
+  }
+
+  s.push({
+    n: pct, u: "%",
+    t: "of the basic profile checks pass on your listing (" + passed + " of " +
+       GAPS.length + "). " + compare
+  });
+
+  return '<div class="stats">' + s.map(function(x){
+    return '<div class="stat">' +
+             '<p class="stat__n">' + x.n + (x.u ? '<span class="stat__u">' + x.u + '</span>' : "") + '</p>' +
+             '<p class="stat__t">' + x.t + '</p>' +
+           '</div>';
+  }).join("") + '</div>';
+}
+
+function lead(d){
+  var above = d.pos - 1;
+  if(d.pos <= 3){
+    return "On " + esc(d.query || d.cat) + " in " + esc(d.city) + ", " + esc(d.name) +
+           " is already one of the three businesses Google shows on the map. This is what is " +
+           "keeping that spot fragile, and what it would take to make it stick.";
+  }
+  return "On " + esc(d.query || d.cat) + " in " + esc(d.city) + ", Google shows three businesses " +
+         "on the map before anyone has to tap anything. " + esc(d.name) + " is not one of them &mdash; " +
+         "there " + plural(above, "is", "are") + " " + above + " " +
+         plural(above, "business", "businesses") + " ahead. Here is what those three have that " +
+         "you do not, and what closes the distance.";
+}
+
+function renderReport(d){
+  return '<div class="rep">' +
+
+    '<header class="rep__hd">' +
+      '<span class="brand">' +
+        '<span class="brand__mark" aria-hidden="true">' +
+          '<svg viewBox="0 0 28 28" fill="none"><path d="M3 24h22" stroke-width="2.1" stroke-linecap="round"/><path d="M7.5 20V15M14 20V10.5M20.5 20V5.5" stroke-width="2.6" stroke-linecap="round"/><path d="M24.4 9.2V4.4h-4.8" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '</span>' +
+        '<span class="brand__wm">Local Boost<span class="brand__fl">FL</span></span>' +
+      '</span>' +
+      '<div class="rep__meta">' +
+        'Local search audit<br>' + esc(d.name) + '<br>' + esc(d.date) +
+      '</div>' +
+    '</header>' +
+
+    '<p class="rep__kick">' + esc(d.city) + ' &middot; ' + esc(d.cat) + '</p>' +
+    '<h1 class="rep__h1">' + (d.pos <= 3
+        ? "You are showing on the map. Here is what is holding you there."
+        : "You are on page one. Just not the part anyone reads.") + '</h1>' +
+    '<p class="rep__lead">' + lead(d) + '</p>' +
+
+    '<section class="rep__sec">' +
+      '<h2 class="rep__h2">What the search looks like today</h2>' +
+      '<p class="rep__cap">Recreated from a Google search for &ldquo;' + esc(d.query || d.cat) +
+        '&rdquo;, run from ' + esc(d.city) + ' on ' + esc(d.date) + '. Local results move week to ' +
+        'week, so this is where things stood on that date.</p>' +
+      renderSerp(d) +
+    '</section>' +
+
+    '<section class="rep__sec">' +
+      '<h2 class="rep__h2">What we found</h2>' +
+      '<p class="rep__cap">Four things get checked on every audit. These are the ones that came back short.</p>' +
+      renderFindings(d) +
+    '</section>' +
+
+    '<section class="rep__sec">' +
+      '<h2 class="rep__h2">The gap, in numbers</h2>' +
+      renderStats(d) +
+    '</section>' +
+
+    '<section class="close">' +
+      '<p class="close__h">Every one of these is fixable, and none of it needs a contract.</p>' +
+      '<p class="close__p">We work month to month. The first month is the profile itself &mdash; ' +
+        'categories, hours, services, photos, and the listings that disagree with each other. ' +
+        'After that it is reviews and ranking, tracked across ' + esc(d.city) + ' so you can see it move.</p>' +
+      '<div class="close__grid">' +
+        '<div><p class="close__k">Call</p><p class="close__v" contenteditable="true">(904) 528-0606</p></div>' +
+        '<div><p class="close__k">Email</p><p class="close__v" contenteditable="true">matt@localboostfl.com</p></div>' +
+        '<div><p class="close__k">Web</p><p class="close__v" contenteditable="true">localboostfl.com</p></div>' +
+      '</div>' +
+      '<p class="edit-note">Contact details are editable &mdash; click any of them to change before printing.</p>' +
+    '</section>' +
+
+  '</div>';
+}
+
+/* =========================================================
+   TRACKER EXPORT
+   One audit becomes one tab-separated line. Tabs are what Excel and Sheets
+   split on when you paste, so a single paste lands in the right cells with
+   no import step and no file on disk.
+   ========================================================= */
+/* Status and Follow-up are deliberately left blank on every row — they are the
+   two columns you fill in by hand, which is what turns the sheet into a pipeline
+   rather than an archive. They still get emitted as empty cells so a paste
+   overwrites the full width of the row instead of leaving the last audit's
+   notes stranded next to new numbers. */
+var TRACK_COLS = ["Date","Business","Category","City","Search","Position","Rating",
+  "Reviews","Ahead","Top competitor","Their reviews","Review gap","Issues","Issue list",
+  "Status","Follow-up"];
+
+function trackRow(d){
+  var above = aboveComps(d);
+  var withReviews = above.filter(function(c){ return c.reviews != null; });
+  var lead = withReviews.length
+    ? withReviews.reduce(function(a,b){ return a.reviews > b.reviews ? a : b; })
+    : null;
+
+  return [
+    d.date,
+    d.name,
+    d.cat,
+    d.city,
+    d.query || d.cat,
+    d.pos,
+    d.rating  == null ? "" : d.rating.toFixed(1),
+    d.reviews == null ? "" : d.reviews,
+    d.pos - 1,
+    lead ? lead.name    : "",
+    lead ? lead.reviews : "",
+    (lead && d.reviews != null) ? lead.reviews - d.reviews : "",
+    d.gaps.length,
+    d.gaps.map(function(g){ return g.label; }).join("; "),
+    "",   // Status
+    ""    // Follow-up
+  ];
+}
+
+/* A tab or a newline inside a cell would split it into extra cells or extra
+   rows on paste, so they collapse to a space. */
+function tsv(cells){
+  return cells.map(function(c){
+    return String(c == null ? "" : c).replace(/[\t\r\n]+/g," ").trim();
+  }).join("\t");
+}
+
+/* navigator.clipboard is unavailable on some file:// setups, so the old
+   textarea trick stays as a fallback rather than failing silently. */
+function copyText(text, btn, okLabel){
+  function done(ok){ flash(btn, ok ? okLabel : "Copy failed", !ok); }
+
+  function legacy(){
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.cssText = "position:fixed;top:-2000px;left:-2000px;opacity:0";
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch(e){ ok = false; }
+    document.body.removeChild(ta);
+    done(ok);
+  }
+
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){ done(true); }, legacy);
+  } else {
+    legacy();
+  }
+}
+
+function flash(btn, msg, bad){
+  var t = btn.querySelector(".btn__t") || btn;
+  if(btn._t) clearTimeout(btn._t); else btn._orig = t.textContent;
+  t.textContent = msg;
+  btn.classList.add(bad ? "is-bad" : "is-ok");
+  btn._t = setTimeout(function(){
+    t.textContent = btn._orig;
+    btn.classList.remove("is-ok", "is-bad");
+    btn._t = null;
+  }, 1700);
+}
+
+/* =========================================================
+   SAVE / OPEN
+   The form snapshot stores raw field strings rather than the parsed report
+   object, so a file round-trips to exactly what was typed — including a
+   position left blank or a rating entered as "4.40".
+   ========================================================= */
+var FILE_TAG = "localboostfl-audit";
+
+function snapshot(){
+  var comps = [];
+  for(var i = 0; i < COMP_ROWS; i++){
+    comps.push({
+      name:    el("k"+i).value,
+      rating:  el("kr"+i).value,
+      reviews: el("kc"+i).value,
+      full:    el("kf"+i).checked
+    });
+  }
+  return {
+    _: FILE_TAG, v: 1,
+    name: el("cName").value, cat: el("cCat").value, city: el("cCity").value,
+    query: el("cQuery").value, pos: el("cPos").value,
+    rating: el("cRating").value, reviews: el("cReviews").value,
+    date: el("cDate").value,
+    comps: comps,
+    gaps: GAPS.filter(function(g){ return el("g_" + g.id).checked; })
+             .map(function(g){ return g.id; })
+  };
+}
+
+function applySnapshot(d){
+  el("form").reset();
+  el("cName").value    = d.name    || "";
+  el("cCat").value     = d.cat     || "";
+  el("cCity").value    = d.city    || "";
+  el("cQuery").value   = d.query   || "";
+  el("cPos").value     = d.pos     == null ? "" : d.pos;
+  el("cRating").value  = d.rating  == null ? "" : d.rating;
+  el("cReviews").value = d.reviews == null ? "" : d.reviews;
+  el("cDate").value    = d.date    || today();
+
+  var comps = d.comps || [];
+  for(var i = 0; i < COMP_ROWS; i++){
+    var c = comps[i] || {};
+    el("k"+i).value    = c.name    || "";
+    el("kr"+i).value   = c.rating  == null ? "" : c.rating;
+    el("kc"+i).value   = c.reviews == null ? "" : c.reviews;
+    el("kf"+i).checked = !!c.full;
+  }
+
+  var on = d.gaps || [];
+  GAPS.forEach(function(g){ el("g_" + g.id).checked = on.indexOf(g.id) !== -1; });
+}
+
+function slug(s){
+  return String(s || "").toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48) || "audit";
+}
+
+/* Filenames sort chronologically in Finder, which is the whole point of putting
+   the date first. Falls back to today if the date field was edited to something
+   unparseable. */
+function stamp(v){
+  var d = new Date(v);
+  if(isNaN(d.getTime())) d = new Date();
+  var p = function(n){ return (n < 10 ? "0" : "") + n; };
+  return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+}
+
+function download(filename, text){
+  var url = URL.createObjectURL(new Blob([text], { type:"application/json" }));
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+
+/* ---------- wire up ---------- */
+var sheet = el("sheet"), errBox = el("err"), ready = false, last = null;
+
+function setReady(v){
+  ready = v;
+  el("btnPrint").disabled = !v;
+  el("btnPdf").disabled   = !v;
+  el("btnCopy").disabled  = !v;
+}
+
+el("form").addEventListener("submit", function(e){
+  e.preventDefault();
+  var d = readForm();
+
+  var missing = [];
+  if(!d.name) missing.push("business name");
+  if(!d.cat)  missing.push("category");
+  if(!d.city) missing.push("city");
+  if(missing.length){
+    errBox.textContent = "Still need: " + missing.join(", ") + ".";
+    setReady(false);
+    return;
+  }
+  errBox.textContent = "";
+  last = d;
+  sheet.innerHTML = renderReport(d);
+  setReady(true);
+  if(window.innerWidth < 1180) sheet.scrollIntoView({ behavior:"smooth", block:"start" });
+});
+
+el("btnSample").addEventListener("click", function(){
+  el("cName").value = SAMPLE.name;
+  el("cCat").value = SAMPLE.cat;
+  el("cCity").value = SAMPLE.city;
+  el("cQuery").value = SAMPLE.query;
+  el("cPos").value = SAMPLE.pos;
+  el("cRating").value = SAMPLE.rating;
+  el("cReviews").value = SAMPLE.reviews;
+  SAMPLE.comps.forEach(function(c, i){
+    el("k"+i).value = c.name;
+    el("kr"+i).value = c.rating;
+    el("kc"+i).value = c.reviews;
+    el("kf"+i).checked = c.full;
+  });
+  GAPS.forEach(function(g){
+    el("g_" + g.id).checked = SAMPLE.gaps.indexOf(g.id) !== -1;
+  });
+});
+
+el("btnClear").addEventListener("click", function(){
+  el("form").reset();
+  el("cDate").value = today();
+  errBox.textContent = "";
+  last = null;
+  setReady(false);
+  sheet.innerHTML =
+    '<div class="empty" id="empty">' +
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-report"/></svg>' +
+      '<p>Fill in the form and hit <strong>Generate report</strong>. What you see here is what prints.</p>' +
+    '</div>';
+});
+
+function doPrint(){ if(ready) window.print(); }
+el("btnPrint").addEventListener("click", doPrint);
+el("btnPdf").addEventListener("click", doPrint);
+
+el("btnCopy").addEventListener("click", function(){
+  if(!ready || !last) return;
+  copyText(tsv(trackRow(last)), this, "Copied");
+});
+el("btnHeads").addEventListener("click", function(){
+  copyText(tsv(TRACK_COLS), this, "Headers copied");
+});
+
+el("btnSave").addEventListener("click", function(){
+  var snap = snapshot();
+  if(!snap.name.trim()){
+    errBox.textContent = "Give the business a name before saving.";
+    return;
+  }
+  errBox.textContent = "";
+  download(stamp(snap.date) + "-" + slug(snap.name) + ".audit.json",
+           JSON.stringify(snap, null, 2));
+  flash(this, "Saved");
+});
+
+el("btnOpen").addEventListener("click", function(){ el("fileIn").click(); });
+
+el("fileIn").addEventListener("change", function(){
+  var file = this.files && this.files[0];
+  this.value = "";              /* so picking the same file twice still fires */
+  if(!file) return;
+
+  var reader = new FileReader();
+  reader.onload = function(){
+    var d = null;
+    try { d = JSON.parse(reader.result); } catch(e){ d = null; }
+    if(!d || d._ !== FILE_TAG){
+      errBox.textContent = "That file is not an audit saved from this tool.";
+      return;
+    }
+    errBox.textContent = "";
+    applySnapshot(d);
+    el("form").dispatchEvent(new Event("submit", { cancelable:true }));
+  };
+  reader.onerror = function(){ errBox.textContent = "That file could not be read."; };
+  reader.readAsText(file);
+});
+
+/* Cmd/Ctrl+P should not print an empty sheet with a half-filled form beside it. */
+window.addEventListener("beforeprint", function(){
+  if(!ready) sheet.innerHTML = '<div class="rep"><p>Nothing generated yet.</p></div>';
+});
+
+})();
+</script>
+</body>
+</html>
