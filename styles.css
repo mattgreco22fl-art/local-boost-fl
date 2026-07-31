@@ -274,7 +274,10 @@ a{color:inherit}
   background:var(--acc);border-radius:2px}
 .blk--alt .ticks li::before{width:9px;height:9px;top:.52em;background:transparent;
   border:2px solid var(--acc);border-radius:50%}
+.abt__more{margin-top:16px;max-width:58ch;color:var(--fg-2)}
 .abt__tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.abt__tags a.chip{text-decoration:none;transition:background .15s,color .15s}
+.abt__tags a.chip:hover{background:var(--acc);color:var(--acc-ink)}
 
 /* ---------- geo grid ---------- */
 .geo{margin:0;background:var(--surface);border:1px solid var(--line-2);
